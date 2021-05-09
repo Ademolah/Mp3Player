@@ -90,16 +90,19 @@ public class Controller implements Initializable {
     }
 
     public void resetMedia() {
-
+        songProgressBar.setProgress(0);
         mediaPlayer.seek(Duration.seconds(0.0));
     }
 
     public void playMedia() {
+        beginTimer();
         changeSpeed(null);
+        mediaPlayer.setVolume(volumeSlider.getValue() * 0.01);
         mediaPlayer.play();
     }
 
     public void pauseMedia() {
+        cancelTimer();
         mediaPlayer.pause();
     }
 
@@ -107,6 +110,9 @@ public class Controller implements Initializable {
         if(songNumber > 0){
             songNumber--;
             mediaPlayer.stop();
+            if(running){
+                cancelTimer();
+            }
             this.media = new Media(songs.get(songNumber).toURI().toString());
             this.mediaPlayer = new MediaPlayer(media);
             songLabel.setText(songs.get(songNumber).getName());
@@ -114,6 +120,9 @@ public class Controller implements Initializable {
         else {
             songNumber = songs.size()-1;
             mediaPlayer.stop();
+            if(running){
+                cancelTimer();
+            }
             this.media = new Media(songs.get(songNumber).toURI().toString());
             this.mediaPlayer = new MediaPlayer(media);
             songLabel.setText(songs.get(songNumber).getName());
@@ -125,6 +134,9 @@ public class Controller implements Initializable {
         if(songNumber < songs.size() -1){
             songNumber++;
             mediaPlayer.stop();
+            if(running){
+                cancelTimer();
+            }
             this.media = new Media(songs.get(songNumber).toURI().toString());
             this.mediaPlayer = new MediaPlayer(media);
             songLabel.setText(songs.get(songNumber).getName());
@@ -140,9 +152,24 @@ public class Controller implements Initializable {
     }
 
     public void beginTimer(){
+        timer = new Timer();
+        task = new TimerTask() {
+            @Override
+            public void run() {
+                running = true;
+                double current = mediaPlayer.getCurrentTime().toSeconds();
+                double end = media.getDuration().toSeconds();
+                songProgressBar.setProgress(current/end);
 
+                if(current/end == 1){
+                    cancelTimer();
+                }
+            }
+        };
+        timer.schedule(task,0,1000);
     }
     public void cancelTimer(){
-
+        running = false;
+        timer.cancel();
     }
 }
