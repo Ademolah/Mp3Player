@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -64,6 +66,13 @@ public class Controller implements Initializable {
         }
 
         speedBox.setOnAction(this::changeSpeed);
+
+        volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                mediaPlayer.setVolume(volumeSlider.getValue() * 0.01);
+            }
+        });
 
         this.media = new Media(songs.get(songNumber).toURI().toString());
         this.mediaPlayer = new MediaPlayer(media);
