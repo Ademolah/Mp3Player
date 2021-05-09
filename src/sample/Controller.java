@@ -65,9 +65,9 @@ public class Controller implements Initializable {
 
         speedBox.setOnAction(this::changeSpeed);
 
-        //this.media = new Media(songs.get(songNumber).toURI().toString());
-        //this.mediaPlayer = new MediaPlayer(media);
-        //songLabel.setText(songs.get(songNumber).getName());
+        this.media = new Media(songs.get(songNumber).toURI().toString());
+        this.mediaPlayer = new MediaPlayer(media);
+        songLabel.setText(songs.get(songNumber).getName());
 
     }
 
@@ -77,7 +77,7 @@ public class Controller implements Initializable {
         }
         else {
             mediaPlayer.setRate(Integer.parseInt(speedBox.getValue().substring(0, speedBox.getValue().length()-1))* 0.01);
-        }  
+        }
     }
 
     public void resetMedia() {
